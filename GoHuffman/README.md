@@ -111,7 +111,7 @@ func EncodeHuffmanTree(tree *HuffmanTree) (stream *ByteStream) {
 
 根据频度表，读取字节，获取Huffman编码，并写入字节流：
 
-```
+```go
 // 根据字典树压缩
 func TreeEncode(tree *HuffmanTree, data []byte) (stream *ByteStream, err error) {
 	stream = NewEmptyByteStream()
