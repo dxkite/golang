@@ -4,6 +4,5 @@
 
 ## 使用
 
-```
-go get dxkite.cn/GoHuffman
-```
+- [GoHuffman](GoHuffman) 基于Huffman的压缩程序 `go get dxkite.cn/GoHuffman`
+- [GoProxy](GoProxy) 基于Go的简单HTTP代理 `go get dxkite.cn/GoProxy`
