@@ -104,14 +104,18 @@ func parseHTTPConnect(conn net.Conn, dial DialFunc) {
 		if _, err := conn.Write([]byte("HTTP/1.1 200 Connection Established\r\n\r\n")); err != nil {
 			log.Println(err)
 		}
-		makeTunnel(conn, to)
-		log.Println("connection closed", request.Host)
 	} else {
-		if _, err := conn.Write([]byte("HTTP/1.1 405 Method Not Allowed\r\n\r\n")); err != nil {
+		//if _, err := conn.Write([]byte("HTTP/1.1 405 Method Not Allowed\r\n\r\n")); err != nil {
+		//	log.Println(err)
+		//}
+		//log.Println("method not allowed", request.Method, request.Host)
+		log.Println("raw http")
+		if _, err := to.Write(data); err != nil {
 			log.Println(err)
 		}
-		log.Println("method not allowed", request.Method, request.Host)
 	}
+	makeTunnel(conn, to)
+	log.Println("connection closed", request.Host)
 }
 
 // 构建隧道
@@ -172,10 +176,9 @@ func getRespond(b []byte) (code int, message string) {
 	return
 }
 
-
 func getHost(host string) string {
 	if strings.Index(host, ":") > 0 {
 		return host
 	}
-	return host+":80"
+	return host + ":80"
 }
