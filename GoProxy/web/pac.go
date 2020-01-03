@@ -14,7 +14,7 @@ func StartPacServe(address, pacFile, proxy string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		pacTxt := strings.Replace(string(data), "__PROXY__", proxy, -1)
+		pacTxt := strings.Replace(string(data), "__PROXY__", "PROXY "+proxy, -1)
 		if _, err := c.Writer.Write([]byte(pacTxt)); err != nil {
 			log.Println(err)
 		}

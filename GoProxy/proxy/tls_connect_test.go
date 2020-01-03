@@ -11,7 +11,7 @@ func init() {
 }
 
 func TestNewTLSListen(t *testing.T) {
-	StartHTTPWrapperConnectListen(":8080",
+	StartTLSWrapperConnectListen(":8080",
 		nil,
 		NewHTTPConnect("127.0.0.1:12639", 3*time.Second),
 		NewTLSListen("../conf/server.pem", "../conf/server.key"))
