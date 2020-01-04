@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dxkite.cn/GoProxy/pac"
 	"dxkite.cn/GoProxy/proxy"
 	"flag"
 	"io"
@@ -49,7 +50,13 @@ func main() {
 	}
 
 	if config.Mode == "client" {
-		log.Println("client mode start:", config.Listen)
+		listen := proxy.GetRealProxy(config.Listen)
+		log.Println("client mode start:", listen)
+		log.Println("client mode pac:", "http://"+listen+"/pac.txt")
+		if config.AutoPac {
+			log.Println("enable auto pac", listen)
+			go pac.AutoSetPac("http://"+listen+"/pac.txt", config.PacFileBackup)
+		}
 		proxy.StartHTTPWrapperConnect(config.Listen, nil,
 			proxy.NewTLSConnect(config.Server, timeout).SetWrapper(wrapper))
 	} else {

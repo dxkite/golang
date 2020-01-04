@@ -4,6 +4,7 @@ package proxy
 import (
 	"bufio"
 	"bytes"
+	"dxkite.cn/GoProxy/pac"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -46,7 +47,7 @@ func (c HTTPConnect) Dial(network, address string) (conn net.Conn, err error) {
 
 	var macAddr []string
 	if c.Mac == true {
-		if mac, er := getMac(); er == nil {
+		if mac, er := GetMac(); er == nil {
 			macAddr = mac
 		}
 	}
@@ -121,6 +122,16 @@ func httpTunnel(conn net.Conn, dial DialFunc) (mac, host string, up, down int64,
 		return
 	}
 	host = getHost(request.Host)
+	if host == conn.LocalAddr().String() {
+		log.Println("request self as http, respond as pac file", request.Method, request.URL.Path)
+		if n, err :=pac.WritePacResponse(conn, _config.PacFile, conn.LocalAddr().String()); err != nil {
+			log.Println("request err", err)
+		} else {
+			down = int64(n)
+		}
+		warnError(conn.Close)
+		return
+	}
 	to, de := dial("tcp", host)
 	log.Println("dial", host)
 	if to != nil {

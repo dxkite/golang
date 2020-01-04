@@ -50,7 +50,7 @@ func readData(reader io.Reader) (d []byte, err error) {
 }
 
 // 获取MAC地址
-func getMac() (addr []string, err error) {
+func GetMac() (addr []string, err error) {
 	if it, ie := net.Interfaces(); ie == nil {
 		for _, itr := range it {
 			ad := strings.ToUpper(hex.EncodeToString(itr.HardwareAddr))
@@ -62,4 +62,13 @@ func getMac() (addr []string, err error) {
 		err = ie
 	}
 	return
+}
+
+
+func GetRealProxy(host string) string {
+	index := strings.Index(host, ":")
+	if index == 0 {
+		return "127.0.0.1" + host
+	}
+	return host + ":80"
 }

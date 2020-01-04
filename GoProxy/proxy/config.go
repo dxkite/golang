@@ -9,21 +9,24 @@ import (
 )
 
 type Config struct {
-	Mode       string `yaml:"mode"`
-	Auth       bool   `yaml:"auth"`
-	Server     string `yaml:"server"`
-	Timeout    int    `yaml:"timeout"`
-	Listen     string `yaml:"listen"`
-	CertFile   string `yaml:"cert_file"`
-	KeyFile    string `yaml:"key_file"`
-	XorKey     int    `yaml:"xor_key"`
-	UserFile   string `yaml:"user_file"`
-	RuntimeLog string `yaml:"runtime_log"`
-	UserLog    string `yaml:"user_log"`
-	AccessLog  string `yaml:"access_log"`
-	HTTPProxy  string `yaml:"http_proxy"`
-	Username   string `yaml:"username"`
-	Password   string `yaml:"password"`
+	Mode          string `yaml:"mode"`
+	Auth          bool   `yaml:"auth"`
+	AutoPac       bool   `yaml:"auto_pac"`
+	PacFileBackup string `yaml:"pac_file_backup"`
+	PacFile       string `yaml:"pac_file"`
+	Server        string `yaml:"server"`
+	Timeout       int    `yaml:"timeout"`
+	Listen        string `yaml:"listen"`
+	CertFile      string `yaml:"cert_file"`
+	KeyFile       string `yaml:"key_file"`
+	XorKey        int    `yaml:"xor_key"`
+	UserFile      string `yaml:"user_file"`
+	RuntimeLog    string `yaml:"runtime_log"`
+	UserLog       string `yaml:"user_log"`
+	AccessLog     string `yaml:"access_log"`
+	HTTPProxy     string `yaml:"http_proxy"`
+	Username      string `yaml:"username"`
+	Password      string `yaml:"password"`
 }
 
 type UserItem struct {

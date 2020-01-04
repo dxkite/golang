@@ -65,7 +65,7 @@ func (c TLSConnect) Dial(network, address string) (conn net.Conn, err error) {
 		log.Println("use wrapper")
 	}
 	var macAddr []string
-	if mac, er := getMac(); er == nil {
+	if mac, er := GetMac(); er == nil {
 		macAddr = mac
 	}
 
