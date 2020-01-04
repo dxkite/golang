@@ -5,6 +5,7 @@ package huffman
 
 import (
 	"errors"
+	"fmt"
 	"hash/crc32"
 	"io/ioutil"
 	"math"
@@ -12,10 +13,10 @@ import (
 )
 
 var (
-	errCrc32      = errors.New("error crc32")
-	errByteLength = errors.New("error byte length")
-	errByteTable  = errors.New("error byte table")
-	errMagicNumber = errors.New("error magic number")
+	ErrCrc32       = errors.New("error crc32")
+	ErrByteLength  = errors.New("error byte length")
+	ErrByteTable   = errors.New("error byte table")
+	ErrMagicNumber = errors.New("error magic number")
 )
 
 const PackStreamHeadLength = 8 + 8 + 8 + 8 + 4 + 2
@@ -38,6 +39,7 @@ func EncodeFile(inputFile, outputFile string) (err error) {
 		if err != nil {
 			return err
 		}
+		fmt.Printf("[+] compression ratio %.2f%%, size from %d -> %d ", (float64(len(encode))/float64(len(data)))*100, len(data), len(encode))
 		return ioutil.WriteFile(outputFile, encode, os.ModePerm)
 	}
 }
@@ -62,7 +64,7 @@ func TreeEncode(tree *HuffmanTree, data []byte) (stream *ByteStream, err error) 
 		if _, code, ok := tree.FindCode(item); ok {
 			stream.WriteBitString(code)
 		} else {
-			return nil, errByteTable
+			return nil, ErrByteTable
 		}
 	}
 	return
@@ -108,7 +110,6 @@ func EncodeByte(data []byte) (output []byte, err error) {
 func EncodePackStream(pack *PackStream) []byte {
 	stream := NewEmptyByteStream()
 	encodeTree := EncodeHuffmanTree(pack.Tree)
-	// Head = uint64 uint64 uint64 unit32 byte
 	stream.WriteUint64(MagicNumber)                                                                 // 文件幻数
 	stream.WriteUint64(uint64(PackStreamHeadLength + len(encodeTree.data) + len(pack.Stream.data))) // 总长度
 	stream.WriteUint64(pack.StreamLength)                                                           // 压缩前大小
@@ -125,13 +126,13 @@ func DecodeByte(input []byte) (data []byte, err error) {
 	stream := NewByteStream(input, uint64(len(input)*4))
 	magic := stream.ReadUint64()
 	if magic != MagicNumber {
-		err = errMagicNumber
+		err = ErrMagicNumber
 		return
 	}
 	total := stream.ReadUint64()
 	// 校验数据大小
 	if uint64(len(input)) != total {
-		err = errByteLength
+		err = ErrByteLength
 		return
 	}
 	byteRawLength := stream.ReadUint64()
@@ -142,7 +143,7 @@ func DecodeByte(input []byte) (data []byte, err error) {
 	tableLen := stream.ReadUint16()
 	// 校验CRC32
 	if crc32Sum != crc32.ChecksumIEEE(input[PackStreamHeadLength:]) {
-		err = errCrc32
+		err = ErrCrc32
 		return
 	}
 	// 生成字典树
@@ -170,10 +171,6 @@ func EncodeHuffmanTree(tree *HuffmanTree) (stream *ByteStream) {
 func DecodeHuffmanTree(stream *ByteStream) (tree *HuffmanTree) {
 	readLen := stream.ReadByte()
 	var treeLen = int(stream.ReadByte())
-	// max 255 256 = 0
-	if treeLen == 0 {
-		treeLen = 256;
-	}
 	var huffmanTable = HuffmanTable{}
 	for i := 0; i <= treeLen; i++ {
 		data := stream.ReadByte()

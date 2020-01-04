@@ -9,9 +9,9 @@ import (
 )
 
 type HuffmanNode struct {
-	Value       byte // 当前节点值
+	Value       byte         // 当前节点值
 	Left, Right *HuffmanNode // 左右子树
-	count       uint // 节点权值
+	count       uint         // 节点权值
 }
 
 type Pair struct {
@@ -119,10 +119,11 @@ func BuildHuffmanTree(table HuffmanByteTable) *HuffmanTree {
 		newTree := mergeNodeToNew(left.count+right.count, left, right)
 		list = append(list[2:], newTree)
 	}
-	treeOrderTable := createHuffmanTable([]HuffmanPair{}, list[0], "")
+	root := list[0]
+	treeOrderTable := createHuffmanTable([]HuffmanPair{}, root, "")
 	sort.Sort(sort.Reverse(treeOrderTable))
 	var tree = HuffmanTree{
-		HuffmanNode: list[0],
+		HuffmanNode: root,
 		table:       treeOrderTable,
 	}
 	return &tree
@@ -149,7 +150,7 @@ func RebuildHuffmanTree(table HuffmanTable) *HuffmanTree {
 
 func (n *HuffmanNode) AppendNode(code string, val byte) {
 	// left = 0, right = 1
-	if len(code) == 1 {
+	if len(code) == 1 { // 到子节点
 		if code == "0" {
 			n.Left = &HuffmanNode{
 				Value: val,
@@ -166,7 +167,7 @@ func (n *HuffmanNode) AppendNode(code string, val byte) {
 				Left:  nil,
 			}
 		}
-	} else {
+	} else if len(code) >= 1 { // 节点有剩余
 		p := code[0]
 		if p == '0' {
 			if n.Left == nil {
@@ -190,6 +191,8 @@ func (n *HuffmanNode) AppendNode(code string, val byte) {
 			}
 			n.Right.AppendNode(code[1:], val)
 		}
+	} else { // 唯一节点
+		n.Value = val
 	}
 }
 
@@ -231,8 +234,6 @@ func (tree *HuffmanTree) FindCode(data byte) (int, string, bool) {
 	return 0, "", false
 }
 
-
-
 func DumpHuffmanTree(tree *HuffmanTree) string {
 	sort.Sort(sort.Reverse(tree.table))
 	var dumpStr = ""
@@ -251,7 +252,7 @@ func DisplayHuffmanTree(tree *HuffmanTree) string {
 		var count int
 		var huffman string
 		if n, err := fmt.Sscanf(val, "%02X\t%d\t%s", &hex, &count, &huffman); n == 3 && err == nil {
-			data[hex] = val;
+			data[hex] = val
 		} else if len(val) > 0 {
 			fmt.Println("error read ", val, " as format")
 		}
@@ -266,6 +267,9 @@ func DisplayHuffmanTree(tree *HuffmanTree) string {
 // 创建Huffman表
 func createHuffmanTable(table HuffmanTable, tree *HuffmanNode, prefix string) HuffmanTable {
 	if tree.IsNode() {
+		if prefix == "" { // 只有一个节点
+			prefix = "1"
+		}
 		table = append(table, HuffmanPair{
 			Pair: Pair{
 				Data:  tree.Value,
@@ -296,4 +300,3 @@ func DumpHuffmanTable(tree *HuffmanNode, prefix string) string {
 	}
 	return s
 }
-

@@ -8,19 +8,27 @@ import (
 	"os"
 )
 
-
 func main() {
 	var inputFilename = flag.String("name", "", "the file name be input")
+	var help = flag.Bool("help", false, "the file name be input")
 	var outputFilename = flag.String("output", "", "the file name be input")
 	var mode = flag.String("mode", "encode", "the mode encode/decode")
+
 	flag.Parse()
+	if len(os.Args) == 1 || *help {
+		flag.Usage()
+	}
+
 	switch *mode {
-	case "encode","e":
+	case "encode", "e":
 		if len(*inputFilename) == 0 {
 			fmt.Println("please input filename")
 			os.Exit(2)
 		}
-		err := huffman.EncodeFile(*inputFilename, *inputFilename + ".hdx1")
+		if len(*outputFilename) == 0 {
+			*outputFilename = *inputFilename + ".hdx1"
+		}
+		err := huffman.EncodeFile(*inputFilename, *outputFilename)
 		if err != nil {
 			fmt.Println("error:", err)
 			os.Exit(1)

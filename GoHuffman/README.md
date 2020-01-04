@@ -81,11 +81,11 @@ if bit == 1 {
 存储Huffman树，采用的是链式存储，由于Huffman编码的长度不会很长，为了节省长度，采用了如下的结构
 
 ```
-|-----------|--------|---------|---------|-------|
-|	uint8   | uint8  | bit * n | bit * k |   ... |
-|-----------|--------|---------|---------|-------|
-   ^            ^         ^            ^
-   |			└- 字典    └- 编码长度   └- 编码 
+┌-----------┬--------┬---------┬---------┬-------┐
+|   uint8   | uint8  | bit * n | bit * k |   ... |
+└-----------┴--------┴---------┴---------┴-------┘
+   ↑            ↑         ↑           ↑
+   |            └- 字典   └- 编码长度  └- 编码 
    └- 树的整块长度, 0~255 分别表示 1-256个     
 ```
 
@@ -111,7 +111,7 @@ func EncodeHuffmanTree(tree *HuffmanTree) (stream *ByteStream) {
 
 根据频度表，读取字节，获取Huffman编码，并写入字节流：
 
-```go
+```
 // 根据字典树压缩
 func TreeEncode(tree *HuffmanTree, data []byte) (stream *ByteStream, err error) {
 	stream = NewEmptyByteStream()
