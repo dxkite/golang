@@ -1,6 +1,7 @@
 package main
 
 import (
+	config2 "dxkite.cn/GoProxy/config"
 	"dxkite.cn/GoProxy/pac"
 	"dxkite.cn/GoProxy/proxy"
 	"flag"
@@ -26,7 +27,7 @@ func main() {
 		return
 	}
 
-	config, err := proxy.LoadConfig(*filename)
+	config, err := config2.LoadConfig(*filename)
 
 	if err != nil {
 		log.Fatalln("read config file error", err)
@@ -61,7 +62,7 @@ func main() {
 			proxy.NewTLSConnect(config.Server, timeout).SetWrapper(wrapper))
 	} else {
 		log.Println("server mode start:", config.Listen)
-		_, err := proxy.LoadUserConfig(config.UserFile)
+		_, err := config2.LoadUserConfig(config.UserFile)
 		if err != nil {
 			log.Fatalln("read user config error", err)
 		}

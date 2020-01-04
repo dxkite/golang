@@ -4,6 +4,7 @@ package proxy
 import (
 	"bufio"
 	"bytes"
+	"dxkite.cn/GoProxy/config"
 	"dxkite.cn/GoProxy/pac"
 	"encoding/base64"
 	"errors"
@@ -124,7 +125,7 @@ func httpTunnel(conn net.Conn, dial DialFunc) (mac, host string, up, down int64,
 	host = getHost(request.Host)
 	if host == conn.LocalAddr().String() {
 		log.Println("request self as http, respond as pac file", request.Method, request.URL.Path)
-		if n, err :=pac.WritePacResponse(conn, _config.PacFile, conn.LocalAddr().String()); err != nil {
+		if n, err :=pac.WritePacResponse(conn, config.GetConfig().PacFile, conn.LocalAddr().String()); err != nil {
 			log.Println("request err", err)
 		} else {
 			down = int64(n)
@@ -146,11 +147,11 @@ func httpTunnel(conn net.Conn, dial DialFunc) (mac, host string, up, down int64,
 		return
 	}
 	mac = request.Header.Get("Mac")
-	if _config.Auth == true {
+	if config.GetConfig().Auth == true {
 		log.Println("auth enable")
 		if user, pass, ok := ProxyAuth(request); ok {
 			log.Println("auth enable", user, pass)
-			if er := AuthUser(user, pass, strings.Split(mac, ",")); er != nil {
+			if er := config.AuthUser(user, pass, strings.Split(mac, ",")); er != nil {
 				if _, we := conn.Write([]byte(fmt.Sprintf("406 Not Acceptable\r\nContent-Length: %d\r\n\r\n%v", len(er.Error()), er))); we != nil {
 					err = we
 				}

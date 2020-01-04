@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"crypto/tls"
+	"dxkite.cn/GoProxy/config"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -32,8 +33,8 @@ func NewTLSListen(certFile, keyFile string) ListenFunc {
 			log.Println(err)
 			return
 		}
-		config := &tls.Config{Certificates: []tls.Certificate{cert}}
-		return tls.Listen(network, address, config)
+		conf := &tls.Config{Certificates: []tls.Certificate{cert}}
+		return tls.Listen(network, address, conf)
 	}
 }
 
@@ -71,8 +72,8 @@ func (c TLSConnect) Dial(network, address string) (conn net.Conn, err error) {
 
 	if _, we := sendJsonMsg(conn, ConnectMessage{
 		Host:         address,
-		Username:     _config.Username,
-		Password:     _config.Password,
+		Username:     config.GetConfig().Username,
+		Password:     config.GetConfig().Password,
 		HardwareAddr: macAddr,
 	}); we != nil {
 		err = we
@@ -128,9 +129,9 @@ func tlsTunnel(conn net.Conn, dial DialFunc) (mac, host string, up, down int64, 
 	}
 	sort.Strings(connect.HardwareAddr)
 	mac = strings.Join(connect.HardwareAddr, ",")
-	if _config.Auth == true {
+	if config.GetConfig().Auth == true {
 		log.Println("auth enable")
-		if er := AuthUser(connect.Username, connect.Password, connect.HardwareAddr); er != nil {
+		if er := config.AuthUser(connect.Username, connect.Password, connect.HardwareAddr); er != nil {
 			if _, we := sendJsonMsg(conn, Message{Code: 401, Msg: er.Error()}); we != nil {
 				err = we
 				return
