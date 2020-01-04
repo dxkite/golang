@@ -89,7 +89,7 @@ func AuthUser(username, password string, macList []string) error {
 			if strings.Compare(user.Password, password) != 0 {
 				return errors.New("auth: password")
 			}
-			if len(user.Mac) > 0 {
+			if len(user.Mac) > 0 || _user.Mac {
 				for _, mac := range macList {
 					if strings.Contains(strings.ToUpper(user.Mac), strings.ToUpper(mac)) == true {
 						return nil
