@@ -2,7 +2,7 @@
 package main
 
 import (
-	"dxkite.cn/GoHuffman/huffman"
+	"dxkite.cn/demo/GoHuffman/huffman"
 	"flag"
 	"fmt"
 	"os"
