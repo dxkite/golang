@@ -5,3 +5,7 @@
 ## 接入图床
 
 - ali 阿里云图床
+
+## Demo
+
+https://dxkite.cn/go-video-image/
