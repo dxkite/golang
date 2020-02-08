@@ -31,6 +31,15 @@ func main() {
 		return
 	}
 
+	if len(*input) == 0 {
+		if flag.NArg() == 1 {
+			*input = flag.Args()[0]
+		} else {
+			flag.Usage()
+			return
+		}
+	}
+
 	tempIndex := path.Join(*outputDir, "output.m3u8")
 	cvt := video.NewSimpleConverter(*binary, *ext, *outputDir, os.Stdout)
 	if er := cvt.Convert("go-t-video-", *input, tempIndex, *time); er != nil {
