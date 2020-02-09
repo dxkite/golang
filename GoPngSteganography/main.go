@@ -13,6 +13,9 @@ import (
 
 func main() {
 	var decode = flag.Bool("decode", false, "decode the input")
+	var input = flag.String("input", "", "the input")
+	var output = flag.String("output", "", "the output")
+
 	var help = flag.Bool("help", false, "print help")
 	flag.Parse()
 
@@ -21,12 +24,27 @@ func main() {
 		return
 	}
 
-	if flag.NArg() > 0 {
+	if len(*input) > 0 {
+		if len(*output) == 0 {
+			*output = *input + ".png"
+		}
+		if *decode {
+			log.Println("decode", *input, "to", *output)
+			if err := pngio.DecodeFile(*input, *output); err != nil {
+				log.Fatal(err)
+			}
+		} else {
+			log.Println("encode", *input, "to", *output)
+			if err := pngio.EncodeFile(*input, *output); err != nil {
+				log.Fatal(err)
+			}
+		}
+	} else if flag.NArg() > 0 {
 		for _, name := range flag.Args() {
-			if *decode {
-				decodeName, _ := getNameExt(name)
-				log.Println("decode", name, "to", decodeName)
-				if err := pngio.DecodeFile(name, decodeName); err != nil {
+			filename, ext := getNameExt(name)
+			if ext == "png" {
+				log.Println("decode", name, "to", filename)
+				if err := pngio.DecodeFile(name, filename); err != nil {
 					log.Fatal(err)
 				}
 			} else {
