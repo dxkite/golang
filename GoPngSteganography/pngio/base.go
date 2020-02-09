@@ -103,10 +103,11 @@ func NewPack(size int) *ImagePack {
 }
 
 func NewDataPack(buf []byte) *ImagePack {
-	w, h := getSize(len(buf))
+	data := append(make([]byte, HeaderLength), buf...)
+	w, h := getSize(len(data) + HeaderLength)
 	r := image.Rect(0, 0, w, h)
 	img := &ImagePack{
-		Image:   &image.NRGBA{append(make([]byte, HeaderLength), buf...), 4 * w, r},
+		Image:   &image.NRGBA{data, 4 * w, r},
 		Version: 1,
 		Length:  uint32(len(buf)),
 		offset:  0,
