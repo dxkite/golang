@@ -116,7 +116,7 @@ func NewDataPack(buf []byte) *ImagePack {
 }
 
 func (p *ImagePack) Resize() *image.NRGBA {
-	w, h := getSize(len(p.Image.Pix))
+	w, h := getSize(HeaderLength + int(p.Length))
 	p.Image.Stride = 4 * w
 	p.Image.Rect = image.Rect(0, 0, w, h)
 	return p.Image

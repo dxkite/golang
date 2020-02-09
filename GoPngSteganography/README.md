@@ -16,3 +16,6 @@ Usage of E:\go-png\go-png.exe:
         the output
 ```
 
+## Example
+
+![](./README.md.png)
