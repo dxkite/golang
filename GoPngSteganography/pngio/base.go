@@ -45,22 +45,11 @@ func (p *ImagePack) Write(b []byte) (n int, err error) {
 }
 
 func (p *ImagePack) writeHeader() {
-	l := make([]byte, 4)
-	i := 0
 	if len(p.Image.Pix) < HeaderLength {
 		p.Image.Pix = make([]byte, HeaderLength)
 	}
-	binary.BigEndian.PutUint32(l, p.Version)
-	p.Image.Pix[i+0] = l[0]
-	p.Image.Pix[i+1] = l[1]
-	p.Image.Pix[i+2] = l[2]
-	p.Image.Pix[i+3] = l[3]
-	binary.BigEndian.PutUint32(l, p.Length)
-	i += 4
-	p.Image.Pix[i+0] = l[0]
-	p.Image.Pix[i+1] = l[1]
-	p.Image.Pix[i+2] = l[2]
-	p.Image.Pix[i+3] = l[3]
+	binary.BigEndian.PutUint32(p.Image.Pix[0:4:4], p.Version)
+	binary.BigEndian.PutUint32(p.Image.Pix[4:8:8], p.Length)
 }
 
 func (p *ImagePack) readHeader() (version, length uint32) {
