@@ -4,7 +4,7 @@
 
 ## 目录
 
-- [GoHuffman](GoHuffman) 基于Huffman的压缩程序 `go get dxkite.cn/demo/GoHuffman`
-- [GoGif](GoGif) 使用Go将图片切分成Gif `go get dxkite.cn/demo/GoGif`
-- [GoPngSteganography](GoPngSteganography) 使用Go将数据作为PNG格式保存 `go get dxkite.cn/demo/GoPngSteganography`
-- [GoVideo2Image](GoVideo2Image) 使用Go将mp4作为HLS流存储在免费图床上 `go get dxkite.cn/demo/GoVideo2Image`
+- [GoHuffman](./tools/cmd/huffman/) 基于Huffman的压缩程序 `go install dxkite.cn/x/tools/cmd/huffman`
+- [GoGif](./tools/cmd/gif-image/) 使用Go将图片切分成Gif `go install dxkite.cn/x/tools/cmd/gif-image`
+- [GoPngSteganography](./tools/cmd/png-steganography/) 使用Go将数据作为PNG格式保存 `go install dxkite.cn/x/tools/cmd/png-steganography`
+- [GoVideo2Image](./tools/cmd/video-to-m3u8/) 使用Go将mp4作为HLS流存储在免费图床上 `go install dxkite.cn/x/tools/cmd/video-to-m3u8`

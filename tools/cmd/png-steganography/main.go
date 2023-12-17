@@ -5,10 +5,11 @@
 package main
 
 import (
-	"dxkite.cn/demo/GoPngSteganography/pngio"
 	"flag"
 	"log"
 	"strings"
+
+	"./pngio"
 )
 
 func main() {
